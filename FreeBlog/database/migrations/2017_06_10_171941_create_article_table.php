@@ -18,13 +18,10 @@ class CreateArticleTable extends Migration
             $table->string('title');
             $table->string('slug');
             $table->longText('content');
-            $table->longText('description');
+            $table->longText('description')->nullable();
 
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-            $table->integer('category_id')->unsigned();
-            $table->foreign('category_id')->references('id')->on('categories');
 
             $table->integer('image_id')->unsigned();
             $table->foreign('image_id')->references('id')->on('images');
