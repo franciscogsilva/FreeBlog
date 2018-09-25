@@ -20,8 +20,11 @@ class CreateCommentTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->integer('article_id')->unsigned();
+            $table->integer('article_id')->unsigned()->nullable();
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
+
+            $table->integer('comment_id')->unsigned()->nullable();
+            $table->foreign('comment_id')->references('id')->on('comments')->onDelete('cascade');
 
             $table->timestamps();
         });
