@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
@@ -55,17 +56,42 @@ class RegisterController extends Controller
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Handle a registration request for the application.
      *
-     * @param  array  $data
-     * @return \App\User
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    protected function create(array $data)
+    public function register(Request $request){
+        $this->validator($request->all())->validate();
+
+        $user = new User();
+        $user->name                 =   $request->name;
+        $user->email                =   $request->email;
+        $user->password             =   bcrypt($request->password);
+        $user->image                =   asset('/img/system32/user_profile.png');
+        $user->image_thumbnail      =   asset('/img/system32/user_profile.png');
+        $user->user_type_id         =   2;
+        $user->confirmation_code    =   str_random(100);
+        $user->save();
+
+        //Mail::to($user->email)->send(new VerificationEmail($user));
+
+        $this->guard()->login($user);
+
+        $user->updateLoginDate();
+
+        return $this->registered($request, $user)
+                        ?: redirect($this->redirectPath());
+    }
+
+    /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        return view('auth.register')
+            ->with('title_page', 'Registro');
     }
 }
