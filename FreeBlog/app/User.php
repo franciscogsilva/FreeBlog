@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Jenssegers\Date\Date;
 
 class User extends Authenticatable
 {
@@ -56,5 +57,30 @@ class User extends Authenticatable
     public function updateLoginDate(){
         $this->logged_at = Carbon::now();
         $this->save();
+    }
+
+    public function scopeSearch($query, $search, $user_type_id){
+        if(!empty($search)){
+            $query = $query->where('name', 'LIKE', "%$search%")
+                ->orWhere('email', 'LIKE', "%$search%");
+        }if(!empty($user_type_id)){
+            $query = $query->where('user_type_id', $user_type_id);
+        }
+
+        return $query;
+    }
+
+    public function getCreatedAtAttribute($date){
+        if($date == null){
+            return null;
+        }
+        return new Date($date);       
+    }
+
+    public function getUpdatedAtAttribute($date){
+        if($date == null){
+            return null;
+        }
+        return new Date($date);
     }
 }

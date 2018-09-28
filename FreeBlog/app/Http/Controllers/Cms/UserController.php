@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Cms;
 
+use App\Http\Controllers\Controller;
 use App\User;
-use InterventionImage;
 use App\UserType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\MessageBag;
+use InterventionImage;
 
 class UserController extends Controller
 {
@@ -23,13 +24,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::where('user_type_id', 2)
-            ->search(
-                $request->name,
+        $users = User::search(
+                $request->search,
                 $request->user_type_id
             )->orderBy('name', 'ASC')
 	            ->paginate(config('freeblog.items_per_page_paginator'))
-	            ->appends('name', $request->name)
+	            ->appends('search', $request->search)
 	            ->appends('user_type_id', $request->user_type_id);
         
         $userTypes = UserType::orderBy('name', 'ASC')->get();
@@ -112,32 +112,32 @@ class UserController extends Controller
     	$userTypes = UserType::orderBy('name', 'ASC')->get();
 
         return view('admin.users.create_edit')
+            ->with('user', $user)
             ->with('userTypes', $userTypes)
             ->with('title_page', 'Editar Usuario: '.$user->name)
             ->with('menu_item', $this->menu_item);
     }
 
     public function update(Request $request, $id){
-			$user = $this->validateUser($id);
-			$this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));
+		$user = $this->validateUser($id);
+		$this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));
 
-			if($user->email != $request->email){
-				$this->validate($request, $this->getValidationEmailRule($request), $this->getValidationEmailMessage($request));            
-			}
+		if($user->email != $request->email){
+			$this->validate($request, $this->getValidationEmailRule($request), $this->getValidationEmailMessage($request));            
+		}
 
-			if($request->file('image')){
-				$rules = [
-				'image' => 'image|mimes:jpg,jpeg,png'
-				];
+		if($request->file('image')){
+			$rules = [
+			'image' => 'image|mimes:jpg,jpeg,png'
+			];
 
-				$this->validate($request, $rules);
-			}
+			$this->validate($request, $rules);
+		}
 
-			$this->setUser($user, $request);
+		$this->setUser($user, $request);
 
-            return redirect()->route('users.index')
-                ->with('session_msg', 'Se ha editado correctamente el usuario');
-        }
+        return redirect()->route('users.index')
+            ->with('session_msg', 'Se ha editado correctamente el usuario');
     }
 
     private function setUser($user, $request, $generatedPassword=null){
@@ -236,7 +236,7 @@ class UserController extends Controller
 
     private function validateUser($id){
         try {
-            $user = User::withTrashed()->findOrFail($id);
+            $user = User::findOrFail($id);
         }catch (ModelNotFoundException $e){
         	$errorsBag = new MessageBag();
             $errorsBag->add('User with ID '.$id.' not found.');
