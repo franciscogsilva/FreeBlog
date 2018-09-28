@@ -64,7 +64,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Bogota',
 
     /*
     |--------------------------------------------------------------------------
@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,6 +177,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         *  FreeBlog
+         */        
+        Intervention\Image\ImageServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,
+        Jenssegers\Date\DateServiceProvider::class,
+        Laraveles\Spanish\SpanishServiceProvider::class,
     ],
 
     /*
@@ -226,6 +233,13 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         *  FreeBlog
+         */ 
+        'InterventionImage' => Intervention\Image\Facades\Image::class,
+        'Form' => Collective\Html\FormFacade::class,
+        'Html' => Collective\Html\HtmlFacade::class,
+        'Date' => Jenssegers\Date\Date::class,
     ],
 
 ];
