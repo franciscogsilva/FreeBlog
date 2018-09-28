@@ -70,7 +70,7 @@ class RegisterController extends Controller
         $user->password             =   bcrypt($request->password);
         $user->image                =   asset('/img/system32/user_profile.png');
         $user->image_thumbnail      =   asset('/img/system32/user_profile.png');
-        $user->user_type_id         =   2;
+        $user->user_type_id         =   3;
         $user->confirmation_code    =   str_random(100);
         $user->save();
 
