@@ -39,7 +39,7 @@ Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], functi
 	Route::namespace('Cms')->group(function(){
 		Route::get('/', 'HomeController@index')->name('admin.index');
 		include_once 'cms/categories.php';
-		include_once 'cms/publications.php';
+		include_once 'cms/articles.php';
 		include_once 'cms/tags.php';
 		include_once 'cms/users.php';
     });
