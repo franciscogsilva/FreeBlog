@@ -45,6 +45,10 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    public function type(){
+        return $this->belongsTo('App\UserType', 'user_type_id');
+    }
+
     public function isAdmin(){
         return $this->type->name === 'Admin';
     }
