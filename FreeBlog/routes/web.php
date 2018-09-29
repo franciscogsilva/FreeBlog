@@ -34,6 +34,8 @@ Route::namespace('Web')->group(function(){
 	Route::get('/home', function () {
 	    return redirect()->route('welcome');
 	})->name('home');
+
+	Route::get('articles/{slug}', 'ArticleController@show')->name('articles.show-front');
 });
 
 Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], function () {	

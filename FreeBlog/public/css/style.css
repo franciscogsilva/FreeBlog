@@ -1444,9 +1444,127 @@ div {
         margin-top: 120px;
         font-size: 3em;
         font-weight: 500;
+    }
+
+    #page-title h1 a{
         color: #ffffff;
     }
 
     .index-container{
-        max-width: 1060px !important;
+        width: 95% !important;
+        max-width: 1110px !important;
+    }
+
+
+    .card-title-index{
+        margin-bottom: 20px !important;
+    }
+
+    .a-title{
+        color: #606060 !important;
+        text-decoration: none;
+    }
+
+    .card-icons ul li {
+        display: inline-block;
+        color: #606060;
+        margin-right: 10px;
+    }
+
+    .card-icons ul li i {
+        color: #424242;
+        font-size: 20px;
+        vertical-align: middle;
+        margin-right: 5px;
+    }
+
+    .card-header-index{        
+        position: relative;
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .card-content-index{
+        padding: 23px 0 15px;
+        margin: 0;
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .card-panel-index{
+        position: relative;
+        padding: 20px 20px 6px !important;
+    }
+
+    #btn-search-index{
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .card-footer-index{
+        padding: 15px 0 0px;
+        margin: 0;
+    }
+
+    .chip {
+        display: inline-block;
+        height: 22px;
+        font-size: 11px;
+        font-weight: 500;
+        color: rgba(0,0,0,0.6);
+        line-height: 23px;
+        padding: 0 12px;
+        border-radius: 16px;
+        background-color: #e4e4e48c;
+        margin-bottom: 5px;
+        margin-right: 5px;
+    }
+
+    .title-index{
+        width: 100%;
+        height: auto;
+        letter-spacing: 0.6px;
+        margin: 0;
+        padding: 15px 15px;
+        font-weight: 300;
+        color: #ffffff;
+        background-color: #424242cf;
+        line-height: 30px;
+        font-size: 1.2em;
+    }
+
+    .category li {
+        display: inline-block;
+        background-color: #ffffff;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        padding: 6px 14px;
+        margin: 0 10px 15px 0;
+        cursor: pointer;
+    }
+
+    .category li a{
+        font-weight: 300;
+        color: #606060;
+        background: none !important;
+        border: none;
+    }
+
+    .card-panel-popular-index{        
+        padding: 0px 20px !important;
+    }
+
+    .card-panel-popular-index .row{        
+        margin-bottom: 0px !important;
+    }
+
+    .col-img-popular{
+        padding: 1px !important;
+    }
+
+    .popular-articles-title{        
+        margin-bottom: 3px;
+        font-weight: 400;
+        letter-spacing: 0.2px;
+    }
+
+    .popular-content p{
+        margin-top: 1px;
     }
