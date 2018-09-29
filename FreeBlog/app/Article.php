@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Cache;
+use Session;
 use Illuminate\Database\Eloquent\Model;
 
 class Article extends Model
@@ -47,12 +49,38 @@ class Article extends Model
             ->withTimestamps();
     }
 
+    public function countViews(Article $article){
+        if (!$this->isPostViewed($article)){
+            $article->views++;
+            $article->save();
+
+            $this->storePost($article);
+        }
+
+        return $article->views;
+    }
+
+    private function isPostViewed($article){
+        $viewed = Session::get('viewed_articles', []);
+        return in_array($article->id, $viewed);
+    }
+
+    private function storePost($article){
+        Session::push('viewed_articles', $article->id);
+    }
+
     public function scopeSearch($query, $search, $category_id, $tag_id, $article_status_id=null){
         if(!empty($search)){
             $query = $query->where('title', 'LIKE', "%$search%")
                 ->orWhereHas('user', function($query) use($search){
                     $query->where('name', 'LIKE', "%$search%")
                         ->orWhere('email', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('categories', function($query) use($search){
+                    $query->where('name', 'LIKE', "%$search%");
+                })
+                ->orWhereHas('tags', function($query) use($search){
+                    $query->where('name', 'LIKE', "%$search%");
                 });
         }if(!empty($category_id)){
             $query = $query->whereHas('categories', function($categories) use($category_id){

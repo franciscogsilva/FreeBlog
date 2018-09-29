@@ -10,8 +10,16 @@
     <link href="{{ asset('plugins/materialize/css/materialize.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300|Material+Icons' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ asset('plugins/font-awesome/css/font-awesome.min.css')  }}">
     @yield('imported_css')
     <meta name="google" value="notranslate">
+    @if(isset($article))    
+        <?php 
+            $meta = $article;
+            $route = "route('articles.show-front', ".$meta->slug.")";
+        ?>
+        @include('front.layouts.partials._metadatos_social')
+    @endif
 </head>
 <body>
     <main>            
