@@ -22,11 +22,13 @@ class HomeController extends Controller
 	            ->appends('category_id,', $request->category_id)
 	            ->appends('tag_id,', $request->tag_id);
         
-        $categories = Category::orderBy('name', 'ASC')->get();
-        $tags = Tag::orderBy('name', 'ASC')->get();
+        $popularArticles = Article::orderBy('views', 'DESC')->take(5)->get();
+        $categories = Category::inRandomOrder()->take(10)->get();
+        $tags = Tag::inRandomOrder()->take(10)->get();
 
 		return view('front.index')
             ->with('articles', $articles)
+            ->with('popularArticles', $popularArticles)
             ->with('categories', $categories)
             ->with('tags', $tags);
 	}
