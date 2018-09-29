@@ -11,10 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
-
 // Authentication Routes...
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
@@ -31,11 +27,16 @@ Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
 Route::get('/register/verify/{confirmation_code}', 'Auth\AuthController@verify');
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], function () {
 	
+Route::namespace('Web')->group(function(){
+	Route::get('/', 'HomeController@index')->name('welcome');
+
+	Route::get('/home', function () {
+	    return redirect()->route('welcome');
+	})->name('home');
+});
+
+Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], function () {	
 	Route::namespace('Cms')->group(function(){
 		Route::get('/', 'HomeController@index')->name('admin.index');
 		include_once 'cms/categories.php';
@@ -43,5 +44,4 @@ Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], functi
 		include_once 'cms/tags.php';
 		include_once 'cms/users.php';
     });
-
 });

@@ -1,7 +1,7 @@
     <ul id="slide-out" class="side-nav fixed side-nav-fgs">
       <li>
         <div class="brand-sidenav-fgs valign-wrapper center-align" style="background-color: #212121;">
-          <a href="{{ route('home') }}">
+          <a href="{{ route('welcome') }}">
             <img class="responsive-img logo-fgs" src="{{ asset('img/system32/logo-CMS.png') }}">
           </a>
         </div>

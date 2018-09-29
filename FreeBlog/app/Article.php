@@ -47,7 +47,7 @@ class Article extends Model
             ->withTimestamps();
     }
 
-    public function scopeSearch($query, $search, $category_id, $tag_id, $article_status_id){
+    public function scopeSearch($query, $search, $category_id, $tag_id, $article_status_id=null){
         if(!empty($search)){
             $query = $query->where('title', 'LIKE', "%$search%")
                 ->orWhereHas('user', function($query) use($search){
