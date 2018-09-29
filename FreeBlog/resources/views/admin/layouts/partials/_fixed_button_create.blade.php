@@ -7,6 +7,12 @@
 		    case 2:
 		    	$route = route('users.create');
 		        break;
+		    case 3:
+		    	$route = route('categories.create');
+		        break;
+		    case 4:
+		    	$route = route('tags.create');
+		        break;
 		}
 	?>
 	<div class="fixed-action-btn">

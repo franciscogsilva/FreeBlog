@@ -10,7 +10,7 @@
 						<div class="row row-search-fgs">
 							<div class="file-field input-field col s12 m12 l9 input-search-fgs">
 								<div class="file-path-wrapper path-wrapper-fgs center-text">
-									<input id="search" type="text" class="validate" name="search">
+									<input id="name" type="text" class="validate" name="name">
 									<label class="label-search-fgs" for="icon_prefix">Buscar categoria por nombre</label>
 								</div>
 							</div>
@@ -53,7 +53,7 @@
 	      										<label for="input_{{$category->id}}"></label>
 											</div>
 		                					{!! Form::close() !!}
-											<a href="{{ route('categories.destroy', $category->id) }}" onclick="return confirm('¿Desea Eliminar la categoria?')" class="btn btn-fgs btn-fgs-delete red darken-3"><i class="material-icons">visibility_off</i></a>
+											<a href="{{ route('categories.destroy', $category->id) }}" onclick="return confirm('¿Desea Eliminar la categoria?')" class="btn btn-fgs btn-fgs-delete red darken-3"><i class="material-icons">delete</i></a>
 											<a href="{{ route('categories.edit', $category->id) }}" class="btn btn-raised btn-primary btn-fgs btn-fgs-edit"><i class="material-icons">create</i></a>
 										</td>
 									</tr>

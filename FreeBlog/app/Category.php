@@ -15,4 +15,12 @@ class Category extends Model
         return $this->belongsToMany('App\Article', 'articles_has_categories', 'category_id', 'article_id')
             ->withTimestamps();
     }
+
+    public function scopeSearch($query, $name){
+        if(!empty($name)){
+            $query = $query->where('name', 'LIKE', "%$name%");
+        }
+
+        return $query;
+    }
 }

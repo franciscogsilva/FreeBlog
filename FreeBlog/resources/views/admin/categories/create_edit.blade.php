@@ -21,7 +21,7 @@
 			                    {!! Form::open(['route' => 'categories.store', 'method' => 'POST', 'onsubmit' => 'preloader()']) !!}
 			                @endif
 			                	<div class="row">
-				                    <div class="input-field col s12 m6 l6">
+				                    <div class="input-field col s12 m12 l12">
 				                        <i class="material-icons prefix">subject</i>
 				                        {!! Form::text('name', isset($category)?$category->name:null, ['class' => '', 'required', 'id' => 'name']) !!}
 				                        <label for="name">Nombre de la Categoria</label>
