@@ -38,12 +38,18 @@ Route::namespace('Web')->group(function(){
 	Route::get('articles/{slug}', 'ArticleController@show')->name('articles.show-front');
 });
 
-Route::group(['prefix'=>'admin', 'middleware' => ['web','auth','admin']], function () {	
+Route::group(['prefix'=>'admin', 'middleware' => ['web','auth', 'editor']], function () {	
 	Route::namespace('Cms')->group(function(){
 		Route::get('/', 'HomeController@index')->name('admin.index');
-		include_once 'cms/categories.php';
 		include_once 'cms/articles.php';
+		include_once 'cms/categories.php';
+		include_once 'cms/profile.php';
 		include_once 'cms/tags.php';
-		include_once 'cms/users.php';
-    });
+	});
 });
+
+Route::group(['prefix'=>'admin', 'middleware' => ['web','auth', 'admin']], function () {	
+	Route::namespace('Cms')->group(function(){
+		include_once 'cms/users.php';	
+    });
+});	

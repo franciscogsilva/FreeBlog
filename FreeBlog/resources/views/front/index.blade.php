@@ -1,12 +1,16 @@
 @extends('front.layouts.front_layout')
 
 @section('content')
-	<div class="parallax-container">
-		<div class="parallax"><img src="{{ asset('img/system32/header-home.jpg') }}"></div>
-		<div id="page-title" class="container">
-            <h1><a href="{{ route('welcome') }}" class="title-top">{{ isset($title_page)?$title_page:env('APP_NAME') }}</a></h1>
-        </div>
-	</div>
+	<a href="{{ route('welcome') }}" class="title-top">
+		<div class="parallax-container">
+			<div class="parallax"><img src="{{ asset('img/system32/header-home.jpg') }}"></div>
+			<!--
+			<div id="page-title" class="container">
+	            <h1>{{ isset($title_page)?$title_page:env('APP_NAME') }}</h1>
+	        </div>
+    		-->
+    	</div>
+    </a>
 	<div class="section white">
 		<div class="row container index-container">
 			<div class="col s12 m12 l8">
@@ -25,6 +29,7 @@
 									<div class="card-icons">
 										<ul>
 											<li><i class="material-icons">calendar_today</i>{{ $article->created_at->diffForHumans() }}</li>
+											<!--
 											<li><i class="material-icons">favorite</i>
 												@if(count($article->likes) < 1000)
 													{{ count($article->likes) }}
@@ -39,6 +44,7 @@
 													{{ count($article->comments)/1000 }}k
 												@endif
 											</li>
+										-->
 											<li><i class="material-icons">remove_red_eye</i>{{ $article->views }}</li>
 										</ul>								
 									</div>

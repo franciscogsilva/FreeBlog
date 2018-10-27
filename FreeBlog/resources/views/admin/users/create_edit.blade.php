@@ -8,7 +8,7 @@
 			        <div class="head-edit">
 			            <div class="section">              
 							@if(isset($user))
-								<p class="caption-title center-align">Editar Usuario</p>
+								<p class="caption-title center-align">Editar {{ Auth::user()->isAdmin()?'Usuario':'Perfil' }}</p>
 							@else 
 			               		<p class="caption-title center-align">Crear nuevo Usuario</p>
 							@endif
@@ -16,7 +16,7 @@
         				@include('admin.layouts.partials._messages')
 			            <div class="section ">
 			                @if(isset($user))
-			                    {!! Form::open(['route' => ['users.update', $user->id], 'method' => 'PUT', 'files' => 'true'], ['class' => 'form-container col s12 center-block']) !!}
+		                    	{!! Form::open(['route' => [Auth::user()->isAdmin()?'users.update':'profile.update', $user->id], 'method' => 'PUT', 'files' => 'true'], ['class' => 'form-container col s12 center-block']) !!}
 			                @else 
 			                    {!! Form::open(['route' => 'users.store', 'method' => 'POST', 'files' => 'true'], ['class' => 'form-container col s12 center-block']) !!}
 			                @endif
@@ -53,22 +53,24 @@
 										{!! Form::textArea('description', isset($user)?$user->description:null, ['class' => 'textArea_description', 'required', 'id' => 'description']) !!}
 									</div>
 								</div>
-								<div class="row">
-									<div class="input-field col s12 m12 l12">
-										<i class="material-icons prefix">school</i>
-										<select id="user_type_id" class="icons" name="user_type_id">
-											<option value="" disabled selected>Selecciona el tipo del usuario</option>
-											@foreach($userTypes as $type)
-												@if(isset($user))
-													<option value="{{ $type->id }}" {{($type->id===$user->type->id)?'selected=selected':''}}>{{ $type->name }}</option>
-												@else 
-													<option value="{{ $type->id }}">{{ $type->name }}</option>
-												@endif
-											@endforeach
-										</select>
-										<label for="user_type_id">Tipo del Usuario</label>
-									</div>	
-								</div>
+								@if(Auth::user()->isAdmin())
+									<div class="row">
+										<div class="input-field col s12 m12 l12">
+											<i class="material-icons prefix">school</i>
+											<select id="user_type_id" class="icons" name="user_type_id">
+												<option value="" disabled selected>Selecciona el tipo del usuario</option>
+												@foreach($userTypes as $type)
+													@if(isset($user))
+														<option value="{{ $type->id }}" {{($type->id===$user->type->id)?'selected=selected':''}}>{{ $type->name }}</option>
+													@else 
+														<option value="{{ $type->id }}">{{ $type->name }}</option>
+													@endif
+												@endforeach
+											</select>
+											<label for="user_type_id">Tipo del Usuario</label>
+										</div>	
+									</div>
+								@endif
 			                    <div class="buttonpanel-edit center-align">
 			                        <a href="{{ route('users.index') }}" class="btn waves-effect waves-light grey" onclick="return confirm('¿Desea cancelar la creación del usuario?')" >Cancelar</a>              
 			                      @if(isset($user))

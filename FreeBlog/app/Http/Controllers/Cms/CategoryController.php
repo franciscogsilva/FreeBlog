@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\MessageBag;
+use Auth;
 
 class CategoryController extends Controller
 {
@@ -67,6 +68,7 @@ class CategoryController extends Controller
      */
     public function edit($id){
         $category = $this->validateCategory($id);
+        $this->validateUserPerm($category);
 
         return view('admin.categories.create_edit')
             ->with('category', $category)
@@ -84,10 +86,21 @@ class CategoryController extends Controller
     public function update(Request $request, $id){
         $this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));
         $category = $this->validateCategory($id);
+        $this->validateUserPerm($category);
         $this->setCategory($category, $request);
 
         return redirect()->route('categories.index')
             ->with('session_msg', '¡La Categoria, se ha editado correctamente!');
+    }
+
+    private function validateUserPerm($resource){        
+        if(!Auth::user()->isAdmin()){
+            $errorsBag = new MessageBag();
+            $errorsBag->add('Acción no permitida.');
+            return back()
+                ->withInput()
+                ->with('errors', $errorsBag);
+        }  
     }
 
     /**
@@ -97,6 +110,7 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, $type=false){
+        $this->validateUserPerm($category);
         $category = $this->validateCategory($id);
         $category->delete();
         if(!$type){

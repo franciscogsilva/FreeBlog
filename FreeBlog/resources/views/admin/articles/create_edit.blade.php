@@ -30,10 +30,6 @@
 			                        <span class="txt-title">Contenido</span>
 										{!! Form::textArea('content', isset($article)?$article->content:null, ['class' => 'textArea_content', 'required', 'id' => 'content']) !!}
 									</div>
-									<div class="input-field col s12 m12 l12">
-			                        <span class="txt-title">Descripción</span>
-										{!! Form::textArea('description', isset($article)?$article->description:null, ['class' => 'textArea_content', 'id' => 'description']) !!}
-									</div>
 								</div>
 								@include('admin.layouts.partials._images_alert_image')
 								<div class="row">									

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Cms;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordUserEmail;
 use App\User;
 use App\UserType;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\MessageBag;
 use InterventionImage;
+use Auth;
 
 class UserController extends Controller
 {
@@ -76,14 +78,13 @@ class UserController extends Controller
         }
 
         $user = new User();
-        $generatedPassword = str_random(8);
-        $this->setUser($user, $request, $generatedPassword);
+        $password_temp = str_random(8);
+        $this->setUser($user, $request, $password_temp);
         $user->confirmation_code = str_random(100);
         $user->save();
 
         //Mail::to($user->email)->send(new VerificationEmail($user));
-
-        //Mail::to($user->email)->send(new PasswordUserEmail($user, $generatedPassword));
+        //Mail::to($user->email)->send(new PasswordUserEmail($user, $password_temp));
 
         return redirect()->route('users.index')
             ->with('session_msg', 'Se ha creado correctamente el usuario');
@@ -120,7 +121,18 @@ class UserController extends Controller
 
     public function update(Request $request, $id){
 		$user = $this->validateUser($id);
-		$this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));
+        $errorsBag = new MessageBag();
+        if(Auth::user()->isAdmin()){
+           $this->validate($request, $this->getValidationTypeRule($request), $this->getValidationTypeMessage($request));            
+        }else{
+            if(Auth::user()->id != $id){
+                $errorsBag->add('El usuario que intenta editar no corresponde al usuario logeado');
+                return back()
+                    ->withInput()
+                    ->with('errors', $errorsBag);
+            }
+        }   
+        $this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));            
 
 		if($user->email != $request->email){
 			$this->validate($request, $this->getValidationEmailRule($request), $this->getValidationEmailMessage($request));            
@@ -136,8 +148,13 @@ class UserController extends Controller
 
 		$this->setUser($user, $request);
 
-        return redirect()->route('users.index')
+        if(Auth::user()->isAdmin()){
+            return redirect()->route('users.index')
             ->with('session_msg', 'Se ha editado correctamente el usuario');
+        }else{
+            return redirect()->route('profile.edit', Auth::user()->id)
+            ->with('session_msg', 'Se ha editado correctamente el perfil de usuario');
+        }
     }
 
     private function setUser($user, $request, $generatedPassword=null){
@@ -147,7 +164,9 @@ class UserController extends Controller
             $user->password = bcrypt($generatedPassword);
         }
         $user->description = $request->description;
-        $user->user_type_id = $request->user_type_id;
+        if(Auth::user()->isAdmin()){
+            $user->user_type_id = $request->user_type_id;
+        }
         $user->save();
 
         if($request->file('image')){
@@ -171,8 +190,8 @@ class UserController extends Controller
             $user->image = asset('/img/users/'.$nameImg);
             $user->image_thumbnail = asset('/img/users/'.$nameImg_thumbnail);
         }elseif(!$user->image){
-            $user->image            =   asset('/img/system32/icon.png');
-            $user->image_thumbnail  =   asset('/img/system32/icon.png');
+            $user->image            =   asset('/img/system32/user_profile.png');
+            $user->image_thumbnail  =   asset('/img/system32/user_profile.png');
         }
 
         return $user->save();
@@ -219,18 +238,28 @@ class UserController extends Controller
         ];
     }
 
+    private function getValidationTypeRule($request){
+        return [
+            'user_type_id'  =>  'required'
+        ];
+    }
+
+    private function getValidationTypeMessage($request){
+        return [
+            'user_type_id.required'     =>  'El tipo de usuario es obligatorio'
+        ];
+    }
+
     private function getValidationRules($request){
         return [
-            'name'          =>  'required|min:3',
-            'user_type_id'	=>  'required'
+            'name'          =>  'required|min:3'
         ];
     }
 
     private function getValidationMessages($request){
         return [
             'name.required'             =>  'El nombre del usuario es obligatorio',
-            'name.min'                  =>  'El nombre del usuario debe contener al menos 3 caracteres.',
-            'user_type_id.required'     =>  'El tipo de usuario es obligatoria'
+            'name.min'                  =>  'El nombre del usuario debe contener al menos 3 caracteres.'
         ];
     }
 

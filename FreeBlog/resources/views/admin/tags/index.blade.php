@@ -53,8 +53,8 @@
 	      										<label for="input_{{$tag->id}}"></label>
 											</div>
 		                					{!! Form::close() !!}
-											<a href="{{ route('tags.destroy', $tag->id) }}" onclick="return confirm('¿Desea Eliminar el Tag?')" class="btn btn-fgs btn-fgs-delete red darken-3"><i class="material-icons">delete</i></a>
-											<a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-raised btn-primary btn-fgs btn-fgs-edit"><i class="material-icons">create</i></a>
+											<a href="{{ route('tags.destroy', $tag->id) }}" onclick="return confirm('¿Desea Eliminar el Tag?')" class="btn btn-fgs btn-fgs-delete red darken-3 {{ !Auth::user()->isAdmin()?'disabled':'' }}"><i class="material-icons">delete</i></a>
+											<a href="{{ route('tags.edit', $tag->id) }}" class="btn btn-raised btn-primary btn-fgs btn-fgs-edit {{ !Auth::user()->isAdmin()?'disabled':'' }}"><i class="material-icons">create</i></a>
 										</td>
 									</tr>
 								@endforeach

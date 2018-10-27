@@ -53,8 +53,8 @@
 	      										<label for="input_{{$category->id}}"></label>
 											</div>
 		                					{!! Form::close() !!}
-											<a href="{{ route('categories.destroy', $category->id) }}" onclick="return confirm('¿Desea Eliminar la categoria?')" class="btn btn-fgs btn-fgs-delete red darken-3"><i class="material-icons">delete</i></a>
-											<a href="{{ route('categories.edit', $category->id) }}" class="btn btn-raised btn-primary btn-fgs btn-fgs-edit"><i class="material-icons">create</i></a>
+											<a href="{{ route('categories.destroy', $category->id) }}" onclick="return confirm('¿Desea Eliminar la categoria?')" class="btn btn-fgs btn-fgs-delete red darken-3 {{ !Auth::user()->isAdmin()?'disabled':'' }}"><i class="material-icons">delete</i></a>
+											<a href="{{ route('categories.edit', $category->id) }}" class="btn btn-raised btn-primary btn-fgs btn-fgs-edit {{ !Auth::user()->isAdmin()?'disabled':'' }}"><i class="material-icons">create</i></a>
 										</td>
 									</tr>
 								@endforeach

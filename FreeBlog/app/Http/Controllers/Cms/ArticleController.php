@@ -9,8 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Image;
 use App\Tag;
 use App\User;
+use Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\Str;
 use InterventionImage;
@@ -28,17 +30,32 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $articles = Article::search(
-                $request->search,
-                $request->category_id,
-                $request->tag_id,
-                $request->article_status_id
-            )->orderBy('created_at', 'DESC')
-	            ->paginate(config('freeblog.items_per_page_paginator'))
-	            ->appends('search', $request->search)
-	            ->appends('category_id,', $request->category_id)
-	            ->appends('tag_id,', $request->tag_id)
-	            ->appends('article_status_id,', $request->article_status_id);
+        if(Auth::user()->isAdmin()){
+            $articles = Article::search(
+                    $request->search,
+                    $request->category_id,
+                    $request->tag_id,
+                    $request->article_status_id
+                )->orderBy('created_at', 'DESC')
+                ->paginate(config('freeblog.items_per_page_paginator'))
+                ->appends('search', $request->search)
+                ->appends('category_id,', $request->category_id)
+                ->appends('tag_id,', $request->tag_id)
+                ->appends('article_status_id,', $request->article_status_id);
+        }else{
+            $articles = Article::search(
+                    $request->search,
+                    $request->category_id,
+                    $request->tag_id,
+                    $request->article_status_id
+                )->where('user_id', Auth::user()->id)
+                ->orderBy('created_at', 'DESC')
+                ->paginate(config('freeblog.items_per_page_paginator'))
+                ->appends('search', $request->search)
+                ->appends('category_id,', $request->category_id)
+                ->appends('tag_id,', $request->tag_id)
+                ->appends('article_status_id,', $request->article_status_id);
+        }
         
         $categories = Category::orderBy('name', 'ASC')->get();
         $tags = Tag::orderBy('name', 'ASC')->get();
@@ -121,7 +138,8 @@ class ArticleController extends Controller
      */
     public function edit($id)
     {        
-        $article = $this->validateArticle($id);        
+        $article = $this->validateArticle($id);
+        $this->validateUserPerm($article);        
         $categories = Category::orderBy('name', 'ASC')->get();
         $tags = Tag::orderBy('name', 'ASC')->get();
         $articleStatuses = ArticleStatus::orderBy('name', 'ASC')->get();
@@ -139,6 +157,7 @@ class ArticleController extends Controller
 
     public function update(Request $request, $id){
 		$article = $this->validateArticle($id);
+        $this->validateUserPerm($article); 
 		if($article->title != $request->title){
         	$this->validate($request, $this->getValidationRulesTitle($request), $this->getValidationTitleMessages($request));
 		}
@@ -160,6 +179,18 @@ class ArticleController extends Controller
 
         return redirect()->route('articles.index')
             ->with('session_msg', 'Se ha editado correctamente el Articulo');
+    }
+
+    private function validateUserPerm($resource){        
+        if(!Auth::user()->isAdmin()){
+            if(Auth::user()->id != $article->user_id){
+                $errorsBag = new MessageBag();
+                $errorsBag->add('Acción no permitida.');
+                return back()
+                    ->withInput()
+                    ->with('errors', $errorsBag);
+            }
+        }  
     }
 
     private function setArticle($article, $request){
@@ -209,6 +240,7 @@ class ArticleController extends Controller
      */
     public function destroy($id, $type=false){
         $article = $this->validateArticle($id);
+        $this->validateUserPerm($article); 
         $article->delete();
         if(!$type){
             return redirect()->route('articles.index')
@@ -245,7 +277,6 @@ class ArticleController extends Controller
     private function getValidationRules($request){
         return [
             'content' => 'required|min:50',
-            'description' => 'required|min:10',
             'user_id' => 'required',
             'article_status_id' => 'required',
             'categories' => 'required',
@@ -257,8 +288,6 @@ class ArticleController extends Controller
         return [
             'content.required' => 'El contenido del Articulo es obligatorio',
             'content.min' => 'El contenido del Articulo debe contener al menos 50 caracteres.',
-            'description.required' => 'La descripción del Articulo es obligatorio',
-            'description.min' => 'La descripción del Articulo debe contener al menos 10 caracteres.',
             'user_id.required' => 'El Autor del Articulo es obligatorio',
             'article_status_id.required' => 'Es estado del Articulo es obligatorio',
             'categories.required' => 'La o las Categorias del Articulo es obligatorio',

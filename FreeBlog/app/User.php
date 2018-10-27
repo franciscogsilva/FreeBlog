@@ -54,6 +54,10 @@ class User extends Authenticatable
         return $this->type->name === 'Admin';
     }
 
+    public function isEditor(){
+        return $this->isAdmin()||$this->type->name==='Editor';
+    }
+
     public function updateLoginDate(){
         $this->logged_at = Carbon::now();
         $this->save();

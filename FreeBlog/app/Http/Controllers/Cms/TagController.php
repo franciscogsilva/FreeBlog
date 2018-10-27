@@ -65,6 +65,7 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id){
+        $this->validateUserPerm($category);
         $tag = $this->validateTag($id);
 
         return view('admin.tags.create_edit')
@@ -81,6 +82,7 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id){
+        $this->validateUserPerm($category);
         $this->validate($request, $this->getValidationRules($request), $this->getValidationMessages($request));
         $tag = $this->validateTag($id);
         $this->setTag($tag, $request);
@@ -96,6 +98,7 @@ class TagController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, $type=false){
+        $this->validateUserPerm($category);
         $tag = $this->validateTag($id);
         $tag->delete();
         if(!$type){
@@ -114,6 +117,16 @@ class TagController extends Controller
         }else{            
             return redirect()->route('tags.index');
         }
+    }
+
+    private function validateUserPerm($resource){        
+        if(!Auth::user()->isAdmin()){
+            $errorsBag = new MessageBag();
+            $errorsBag->add('Acción no permitida.');
+            return back()
+                ->withInput()
+                ->with('errors', $errorsBag);
+        }  
     }
 
     private function setTag($tag, $request){

@@ -13,12 +13,21 @@
         </div>
       </li>
       <li><div class="divider-fgs"></div></li>
-      <li>
-        <div class="menu-item-fgs valign-wrapper">
-          <a href="{{ route('users.index') }}" {{ $menu_item == 2 ? 'class=active-fgs' : '' }}><i class="material-icons">people</i>Usuarios</a>         
-        </div>
-      </li>
-      <li><div class="divider-fgs"></div></li>
+      @if(Auth::user()->isAdmin())
+        <li>
+          <div class="menu-item-fgs valign-wrapper">
+            <a href="{{ route('users.index') }}" {{ $menu_item == 2 ? 'class=active-fgs' : '' }}><i class="material-icons">people</i>Usuarios</a>         
+          </div>
+        </li>
+        <li><div class="divider-fgs"></div></li>
+      @else
+        <li>
+          <div class="menu-item-fgs valign-wrapper">
+            <a href="{{ route('profile.edit', Auth::user()->id) }}" {{ $menu_item == 2 ? 'class=active-fgs' : '' }}><i class="material-icons">people</i>Perfil</a>         
+          </div>
+        </li>
+        <li><div class="divider-fgs"></div></li>
+      @endif
       <li>
         <div class="menu-item-fgs valign-wrapper">
           <a href="{{ route('articles.index') }}" {{ $menu_item == 1 ? 'class=active-fgs' : '' }}><i class="material-icons">description</i>Articulos</a>         
