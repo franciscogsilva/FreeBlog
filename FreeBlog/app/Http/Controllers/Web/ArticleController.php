@@ -38,7 +38,7 @@ class ArticleController extends Controller
             ->with('popularArticles', $popularArticles)
             ->with('categories', $categories)
             ->with('tags', $tags)
-            ->with('title_page', 'Appsolution Blog - '.$article->title)
+            ->with('title_page', env('APP_NAME').' - '.$article->title)
             ->with('menu_item', $this->menu_item);            
     }
 }

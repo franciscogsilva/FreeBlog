@@ -69,7 +69,7 @@ class Article extends Model
         Session::push('viewed_articles', $article->id);
     }
 
-    public function scopeSearch($query, $search, $category_id, $tag_id, $article_status_id=null){
+    public function scopeSearch($query, $search, $category_id, $tag_id, $user_id, $article_status_id=null){
         if(!empty($search)){
             $query = $query->where('title', 'LIKE', "%$search%")
                 ->orWhereHas('user', function($query) use($search){
@@ -90,6 +90,8 @@ class Article extends Model
             $query = $query->whereHas('tags', function($tags) use($tag_id){
                 $tags->where('tag_id', $tag_id);
             });
+        }if(!empty($user_id)){
+            $query->where('user_id', $user_id);
         }if(!empty($article_status_id)){
             $query->where('article_status_id', $article_status_id);
         }
